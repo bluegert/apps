@@ -61,7 +61,7 @@ def find_topic():
     text += random.choice(texts)
   response = openai.Completion.create(
       engine="text-davinci-002",
-      prompt=f"Here are some snippets from a document. What is the topic of this document summarized in only a few words? {text}  Here are some examples #1 Climate Change #2 Increasing sales #3 Comedy shows",
+      prompt=f"Here are some snippets from a document. What is the topic of this document summarized in five or fewer words? {text}  Here are some examples #1 Climate Change #2 Increasing sales #3 Comedy shows",
       max_tokens=150
   )
   return response.choices[0].text
