@@ -11,19 +11,6 @@ from gsheetsdb import connect
 
 openai.api_key = st.secrets['api_key']
 
-conn = connect()
-
-# Perform SQL query on the Google Sheet.
-# Uses st.cache_data to only rerun when the query changes or after 10 min.
-@st.cache_data(ttl=600)
-def run_query(query):
-    rows = conn.execute(query, headers=1)
-    rows = rows.fetchall()
-    return rows
-
-sheet_url = st.secrets["public_gsheets_url"]
-rows = run_query(f'SELECT * FROM "{sheet_url}"')
-st.write(rows)
 
 
 def craft_response(query, msg):
@@ -34,15 +21,16 @@ def craft_response(query, msg):
     )
     return response.choices[0].text
 
-import streamlit as st
-craft_response('What is the price of Microsoft stock?', 'We are profitable')
-
 # Store the initial value of widgets in session state
 if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
 uploaded_file = st.file_uploader("Choose a file", type="csv")
+if uploaded_file is not None:
+    dataframe = pd.read_csv(uploaded_file)
+    st.write(dataframe)
+
 
 def get_similar_terms(text_input):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
