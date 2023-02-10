@@ -11,6 +11,7 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from operator import itemgetter
+import PyPDF2
 
 openai.api_key = st.secrets['api_key']
 
@@ -53,7 +54,19 @@ text_splitter = CharacterTextSplitter(
 
 uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
-    texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    if uploaded_file.name.endswith(".pdf"):
+      pdffileobj = open(uploaded_file.name,'rb')
+      pdfreader = PyPDF2.PdfFileReader(pdffileobj)
+      num_pages = pdfreader.numPages
+      count = 0
+      text = ""
+      while count < num_pages:
+        pageObj = pdfreader.getPage(count)
+        count +=1
+        text += pageObj.extractText()
+        texts = text_splitter.split_text(text)
+    else:
+      texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
