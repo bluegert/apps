@@ -24,6 +24,8 @@ df = pd.DataFrame({
   'second column': [10, 20, 30, 40]
 })
 
+st.write(df)
+
 
 # @app.route('/static/')
 # def serve_static(filename):
