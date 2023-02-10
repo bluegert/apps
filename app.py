@@ -75,21 +75,20 @@ if uploaded_file is not None:
         # placeholder=st.session_state.placeholder,
     )
 
+    if text_input:
+      if 'generated' not in st.session_state:
+            st.session_state['generated'] = []
 
-if text_input:
-  if 'generated' not in st.session_state:
-        st.session_state['generated'] = []
-
-  if 'past' not in st.session_state:
-      st.session_state['past'] = []
-  similar_terms = get_similar_terms(text_input, text_vectors, texts)
-  response = craft_response(text_input, similar_terms)
-  st.session_state.past.append(text_input)
-  st.session_state.generated.append(response)
-  if st.session_state['generated']:
-    for i in range(len(st.session_state['generated'])-1, -1, -1):
-        message(st.session_state["generated"][i], key=str(i))
-        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+      if 'past' not in st.session_state:
+          st.session_state['past'] = []
+      similar_terms = get_similar_terms(text_input, text_vectors, texts)
+      response = craft_response(text_input, similar_terms)
+      st.session_state.past.append(text_input)
+      st.session_state.generated.append(response)
+      if st.session_state['generated']:
+        for i in range(len(st.session_state['generated'])-1, -1, -1):
+            message(st.session_state["generated"][i], key=str(i))
+            message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
 
 
 # # with open("foo.pkl", 'rb') as f: 
