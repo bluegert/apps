@@ -51,35 +51,37 @@ text_splitter = CharacterTextSplitter(
     chunk_overlap  = 200,
     length_function = len,
 )
-
 uploaded_file = st.file_uploader("Choose a file first")
+st.set_option('deprecation.showfileUploaderEncoding', False)
+
 if uploaded_file is not None:
     if uploaded_file.name.endswith(".pdf"):
-      with open(uploaded_file.name, "rb") as f:
-        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
-        num_pages = base64_pdf.numPages
-        count = 0
-        text = ""
-        while count < num_pages:
-          pageObj = base64_pdf.getPage(count)
-          count +=1
-          text += pageObj.extractText()
-          texts = text_splitter.split_text(text)
-    else:
-      texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
-    text_vectors = []
-    for i in range(len(texts)):
-      text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
-    text_input = st.text_input(
-        "Ask a question 👇", # make this custom to the pdf
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled
-        # placeholder=st.session_state.placeholder,
-    )
-    similar_terms = get_similar_terms(text_input, text_vectors, texts)
-    response = craft_response(text_input, similar_terms)
-    if text_input:
-        st.write("Answer: " + response)
+      st.write(uploaded_file.read())
+    #   with open(f"data:application/pdf;base64/{uploaded_file.name}", "rb") as f:
+    #     base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+    #     num_pages = base64_pdf.numPages
+    #     count = 0
+    #     text = ""
+    #     while count < num_pages:
+    #       pageObj = base64_pdf.getPage(count)
+    #       count +=1
+    #       text += pageObj.extractText()
+    #       texts = text_splitter.split_text(text)
+    # else:
+    #   texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    # text_vectors = []
+    # for i in range(len(texts)):
+    #   text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
+    # text_input = st.text_input(
+    #     "Ask a question 👇", # make this custom to the pdf
+    #     label_visibility=st.session_state.visibility,
+    #     disabled=st.session_state.disabled
+    #     # placeholder=st.session_state.placeholder,
+    # )
+    # similar_terms = get_similar_terms(text_input, text_vectors, texts)
+    # response = craft_response(text_input, similar_terms)
+    # if text_input:
+    #     st.write("Answer: " + response)
 
 
 # # with open("foo.pkl", 'rb') as f: 
