@@ -7,8 +7,7 @@ import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
-from gsheetsdb import connect
-import pdfplumber
+import pdfplumber 
 
 openai.api_key = st.secrets['api_key']
 
@@ -50,7 +49,7 @@ def extract_data(feed):
 
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    df = extract_data(uploaded_file)
+    st.write(uploaded_file)
     text_input = st.text_input(
         "Ask a question about Microsoft's latest shareholder meeting 👇",
         label_visibility=st.session_state.visibility,
@@ -61,6 +60,9 @@ if uploaded_file is not None:
     # if text_input:
     #     st.write("Answer: " + response)
 
+  
+# # creating a pdf file object
+# pdfFileObj = open('/Users/wesley/AI/chatgpt/data_collection/docs/IPCC_AR6_WGII_SummaryForPolicyMakers.pdf', 'rb')
   
 # # creating a pdf reader object
 # reader = PyPDF2.PdfReader(pdfFileObj)
@@ -100,22 +102,3 @@ if uploaded_file is not None:
 # answer = chain.run(input_documents=docs, question=query)
 # print(query)
 # print(answer)
-
-
-
-# #     df = dict(supabase.table("Vec").select("*").execute())
-# #     df = pd.DataFrame.from_dict(df['data'])
-# #     # df = pd.read_csv('/Users/wesley/AI/chatgpt/earnings_embeddings.csv')
-# #     df['embedding'] = df['embedding'].apply(eval).apply(np.array)
-# #     df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
-# #     sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
-# #     # print(sorted_by_similarity.iloc[2,3])
-# #     print(sorted_by_similarity.text)
-# #     if sorted_by_similarity.iloc[2,3] < 0.8:
-# #       response = "Question is out of scope. Please try to rephrase it."
-# #     else:
-# #       results = sorted_by_similarity['text'].values.tolist()
-# #       response = craft_response(query, results)
-# #       response = "Q:" + query + " A" + response
-# #     # Render the search results template, passing in the search query and results
-# #     return render_template('search_results.html', query=query, results=response)
