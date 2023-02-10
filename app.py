@@ -25,7 +25,6 @@ if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
-col2 = st.columns(1)
 
 uploaded_file = st.file_uploader("Choose a file", type="csv")
 
@@ -39,19 +38,18 @@ def get_similar_terms(text_input):
     msg = ''
     return msg
 
-with col2:
-    text_input = st.text_input(
-        "Ask a question about Microsoft's latest shareholder meeting 👇",
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled,
-        placeholder=st.session_state.placeholder,
-    )
-    msg = 'We are profitable'
-    # msg = get_similar_terms()
+text_input = st.text_input(
+    "Ask a question about Microsoft's latest shareholder meeting 👇",
+    label_visibility=st.session_state.visibility,
+    disabled=st.session_state.disabled,
+    placeholder=st.session_state.placeholder,
+)
+msg = 'We are profitable'
+# msg = get_similar_terms()
 
-    if text_input:
-        craft_response(text_input, msg)
-        st.write("Answer: ", text_input)
+if text_input:
+    craft_response(text_input, msg)
+    st.write("Answer: ", text_input)
 
 
 #     df = dict(supabase.table("Vec").select("*").execute())
