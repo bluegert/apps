@@ -2,3 +2,7 @@ openai
 gsheetsdb
 langchain
 langchain.text_splitter
+pickle
+langchain.embeddings.openai
+langchain.vectorstores
+

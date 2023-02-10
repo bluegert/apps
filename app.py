@@ -8,6 +8,8 @@ import os
 # import asyncio
 import streamlit as st
 from langchain.text_splitter import CharacterTextSplitter
+from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.vectorstores import FAISS
 
 
 openai.api_key = st.secrets['api_key']
@@ -25,20 +27,20 @@ if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
-def get_similar_terms(text_input, df):
-    search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
-    st.write(df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector)))
+# def get_similar_terms(text_input, df):
+#     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
+#     st.write(df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector)))
 
-    # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
-    # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
-    # if sorted_by_similarity.iloc[2,4] < 0.8:
-    #     results = "Question is out of scope. Please try to rephrase it."
-    # else:
-    #     results = sorted_by_similarity['text'].values.tolist()
-    #     response = craft_response(text_input, results)
-    #     response = "Q:" + text_input + " A" + response
-    response="remove this"
-    return response
+#     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
+#     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
+#     # if sorted_by_similarity.iloc[2,4] < 0.8:
+#     #     results = "Question is out of scope. Please try to rephrase it."
+#     # else:
+#     #     results = sorted_by_similarity['text'].values.tolist()
+#     #     response = craft_response(text_input, results)
+#     #     response = "Q:" + text_input + " A" + response
+#     response="remove this"
+#     return response
 
 text_splitter = CharacterTextSplitter(        
     separator = "\n",
@@ -50,23 +52,21 @@ text_splitter = CharacterTextSplitter(
 uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
     texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
-    st.write(texts)
+    embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
+    docsearch = FAISS.from_texts(texts, embeddings)
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
     )
-    # response = get_similar_terms(text_input, df)
-    # if text_input:
-    #     st.write("Answer: " + response)
+    query = "How do I send money"
+    response = docsearch.similarity_search(query)
+    st.write(response)
+    craft_response(query, response)
+    if text_input:
+        st.write("Answer: " + response)
 
-
-
-# embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
-# import pickle
-# # with open("foo.pkl", 'wb') as f:
-# #     pickle.dump(embeddings, f)
 
 # with open("foo.pkl", 'rb') as f: 
 #    new_docsearch = pickle.load(f)
