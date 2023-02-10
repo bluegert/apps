@@ -13,7 +13,6 @@ from langchain.vectorstores import FAISS
 from operator import itemgetter
 import PyPDF2
 import base64
-import random
 
 openai.api_key = st.secrets['api_key']
 
@@ -55,34 +54,26 @@ text_splitter = CharacterTextSplitter(
 )
 uploaded_file = st.file_uploader("Choose a file first")
 
-def find_topic(texts):
-  text = ""
-  for i in range(8):
-    text += random.choice(texts)
-  response = openai.Completion.create(
-      engine="text-davinci-002",
-      prompt=f"Here are some snippets from a document. What is the topic of this document summarized in five or fewer words? {text}  Here are some examples #1 Climate Change #2 Increasing sales #3 Comedy shows",
-      max_tokens=150
-  )
-  return response.choices[0].text
+
+
 
 if uploaded_file is not None:
-    # if uploaded_file.name.endswith(".pdf"):
-    #   base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')
-    #   pdf_display = (
-    #     f'<embed src="data:application/pdf;base64,{base64_pdf}" '
-    # 'width="800" height="1000" type="application/pdf"></embed>'
-    # )
-    #   st.markdown(pdf_display, unsafe_allow_html=True)
-    # else:
-    texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    if uploaded_file.name.endswith(".pdf"):
+      base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')
+      pdf_display = (
+        f'<embed src="data:application/pdf;base64,{base64_pdf}" '
+    'width="800" height="1000" type="application/pdf"></embed>'
+    )
+      st.markdown(pdf_display, unsafe_allow_html=True)
+    else:
+      texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
     
-    topic = find_topic(texts)
+    topic = find_topic()
     text_input = st.text_input(
-        f"Ask a question about {topic} 👇", # make this custom to the pdf
+        "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
