@@ -35,7 +35,6 @@ def get_similar_terms(text_input, text_vectors, texts):
     for i in range(len(text_vectors)):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1), reverse=True)
-    st.write(sorted_texts[:3])
     return list(zip(*sorted_texts[:3]))
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
@@ -68,7 +67,6 @@ if uploaded_file is not None:
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
-    st.write(text_vectors)
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
