@@ -71,7 +71,7 @@ if uploaded_file is not None:
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
     
-    topic = find_topic()
+    # topic = find_topic()
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
