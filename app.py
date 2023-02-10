@@ -75,10 +75,10 @@ if uploaded_file is not None:
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
     )
-    similar_terms = get_similar_terms(text_input, text_vectors, texts)
-    response = craft_response(text_input, similar_terms)
     if text_input:
-        st.write("Answer: " + response)
+      similar_terms = get_similar_terms(text_input, text_vectors, texts)
+      response = craft_response(text_input, similar_terms)
+      st.write("Answer: " + response)
 
 
 # # with open("foo.pkl", 'rb') as f: 
