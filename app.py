@@ -7,7 +7,8 @@ import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
-import pdfplumber
+from io import StringIO
+
 
 openai.api_key = st.secrets['api_key']
 
@@ -39,18 +40,14 @@ def get_similar_terms(text_input, df):
     response="remove this"
     return response
 
-def extract_data(feed):
-    data = []
-    with pdfplumber.load(feed) as pdf:
-        pages = pdf.pages
-        for p in pages:
-            print(p)
-    return None # build more code to return a dataframe
-
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    bytes_data = uploaded_file.getvalue()
-    st.write(bytes_data)
+    stringio = StringIO(uploaded_file.getvalue().decode("utf-8"))
+    st.write(stringio)
+    string_data = stringio.read()
+    st.write(string_data)
+
+
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
