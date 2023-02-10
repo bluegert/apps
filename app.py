@@ -26,7 +26,10 @@ if "visibility" not in st.session_state:
 
 def get_similar_terms(text_input, df):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
-    df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
+    st.write(search_term_vector)
+    st.write(df['embedding'])
+
+    # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
     # if sorted_by_similarity.iloc[2,4] < 0.8:
     #     results = "Question is out of scope. Please try to rephrase it."
