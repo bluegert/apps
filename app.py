@@ -10,7 +10,7 @@ import streamlit as st
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
-
+from operator import itemgetter
 
 openai.api_key = st.secrets['api_key']
 
@@ -32,7 +32,7 @@ def get_similar_terms(text_input, text_vectors, texts):
     similarities = []
     for i in range(len(text_vectors)):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
-    sorted_texts = zip(texts, similarities).sort(key=lambda a: a[1])
+    sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1))
     st.write(sorted_texts)
     return list(zip(*sorted_texts))
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
