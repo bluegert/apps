@@ -74,11 +74,10 @@ if uploaded_file is not None:
           disabled=st.session_state.disabled
           # placeholder=st.session_state.placeholder,
       )
-      
+
 if text_input:
   similar_terms = get_similar_terms(text_input, text_vectors, texts)
   response = craft_response(text_input, similar_terms)
-  st.write("Answer: " + response)
   st.session_state.past.append(text_input)
   st.session_state.generated.append(response)
   if st.session_state['generated']:
