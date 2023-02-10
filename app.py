@@ -17,7 +17,7 @@ openai.api_key = st.secrets['api_key']
 def craft_response(query, msg):
     response = openai.Completion.create(
         engine="text-davinci-002",
-        prompt=f"You are a financial spokesman for Microsoft. A journalist just asked you this question: {query}. In the past you have said the following around this topic: {msg}. Craft an insightful response to the journalist based on the facts presented in your earlier responses. Change as little wording as possible. Keep the answer highly relevant to the question, do not add extra stuff",
+        prompt=f"A journalist just asked you this question: {query}. In the past you have said the following around this topic: {msg}. Craft an insightful response to the journalist based on the facts presented in your earlier responses. Change as little wording as possible. Keep the answer highly relevant to the question, do not add extra stuff",
         max_tokens=150
     )
     return response.choices[0].text
