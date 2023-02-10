@@ -27,13 +27,14 @@ if "visibility" not in st.session_state:
 def get_similar_terms(text_input, df):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
     df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
-    sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
-    if sorted_by_similarity.iloc[2,4] < 0.8:
-        results = "Question is out of scope. Please try to rephrase it."
-    else:
-        results = sorted_by_similarity['text'].values.tolist()
-        response = craft_response(text_input, results)
-        response = "Q:" + text_input + " A" + response
+    # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
+    # if sorted_by_similarity.iloc[2,4] < 0.8:
+    #     results = "Question is out of scope. Please try to rephrase it."
+    # else:
+    #     results = sorted_by_similarity['text'].values.tolist()
+    #     response = craft_response(text_input, results)
+    #     response = "Q:" + text_input + " A" + response
+    response="remove this"
     return response
 
 uploaded_file = st.file_uploader("Choose a file first", type="csv")
