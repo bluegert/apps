@@ -10,7 +10,7 @@ import streamlit as st
 
 # openai.api_key = ""
 
-openai.api_key = st.write(st.secrets['api_key'])
+openai.api_key = st.secrets['api_key']
 
 def craft_response(query, msg):
     response = openai.Completion.create(
