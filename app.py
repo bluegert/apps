@@ -27,12 +27,12 @@ if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
-def get_similar_terms(text_input, text_vectors):
+def get_similar_terms(text_input, text_vectors, texts):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
     similarities = []
     for i in range(len(text_vectors)):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
-    sorted_texts = sorted(zip(text_input, similarities), reverse=True)[:3]
+    sorted_texts = sorted(zip(texts, similarities), reverse=True)[:3]
     st.write(sorted_texts)
     return list(zip(*sorted_texts))
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
@@ -63,8 +63,7 @@ if uploaded_file is not None:
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
     )
-  
-    similar_terms = get_similar_terms(text_input, text_vectors)
+    similar_terms = get_similar_terms(text_input, text_vectors, texts)
     response = craft_response(text_input, similar_terms)
     if text_input:
         st.write("Answer: " + response)
