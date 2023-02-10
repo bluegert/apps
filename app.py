@@ -28,7 +28,7 @@ if "visibility" not in st.session_state:
     st.session_state.disabled = False
 
 def get_similar_terms(text_input, text_vectors):
-    search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002"
+    search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
     similarities = []
     for i in range(len(text_vectors)):
         similarities[i] = cosine_similarity(text_vectors[i], search_term_vector)
