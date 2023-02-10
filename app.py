@@ -66,6 +66,7 @@ if uploaded_file is not None:
     response = craft_response(text_input, similar_terms)
     if text_input:
         st.write("Answer: " + response)
+        st.write(similar_terms)
 
 
 # # with open("foo.pkl", 'rb') as f: 
