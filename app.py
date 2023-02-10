@@ -75,7 +75,13 @@ if uploaded_file is not None:
         # placeholder=st.session_state.placeholder,
     )
 
+
 if text_input:
+  if 'generated' not in st.session_state:
+        st.session_state['generated'] = []
+
+  if 'past' not in st.session_state:
+      st.session_state['past'] = []
   similar_terms = get_similar_terms(text_input, text_vectors, texts)
   response = craft_response(text_input, similar_terms)
   st.session_state.past.append(text_input)
