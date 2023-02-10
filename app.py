@@ -34,7 +34,7 @@ def get_similar_terms(text_input, text_vectors):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     sorted_texts = sorted(zip(text_input[i], similarities), reverse=True)[:3]
     st.write(sorted_texts)
-    return list(zip(*sorted_texts))[0]
+    return list(zip(*sorted_texts))
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
     # if sorted_by_similarity.iloc[2,4] < 0.8:
