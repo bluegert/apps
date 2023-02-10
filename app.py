@@ -56,15 +56,16 @@ uploaded_file = st.file_uploader("Choose a file first")
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
 if uploaded_file is not None:
-    if uploaded_file.name.endswith(".pdf"):
-      base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')
-      pdf_display = (
-        f'<embed src="data:application/pdf;base64,{base64_pdf}" '
-    'width="800" height="1000" type="application/pdf"></embed>'
-    )
-      st.markdown(pdf_display, unsafe_allow_html=True)
-    else:
-      texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    # if uploaded_file.name.endswith(".pdf"):
+    #   base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')
+    #   pdf_display = (
+    #     f'<embed src="data:application/pdf;base64,{base64_pdf}" '
+    # 'width="800" height="1000" type="application/pdf"></embed>'
+    # )
+    #   st.markdown(pdf_display, unsafe_allow_html=True)
+    # else:
+    texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    st.write(texts)
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
