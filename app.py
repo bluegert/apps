@@ -53,6 +53,7 @@ uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
     texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
     embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
+    st.write(texts,embeddings)
     docsearch = FAISS.from_texts(texts, embeddings)
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
