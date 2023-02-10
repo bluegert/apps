@@ -39,11 +39,17 @@ def get_similar_terms(text_input, df):
     response="remove this"
     return response
 
-
+def extract_data(feed):
+    data = []
+    with pdfplumber.load(feed) as pdf:
+        pages = pdf.pages
+        for p in pages:
+            print(p)
+    return None # build more code to return a dataframe
 
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    pdfplumber.load(uploaded_file)
+    df = extract_data(uploaded_file)
     text_input = st.text_input(
         "Ask a question about Microsoft's latest shareholder meeting 👇",
         label_visibility=st.session_state.visibility,
