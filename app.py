@@ -57,7 +57,8 @@ st.set_option('deprecation.showfileUploaderEncoding', False)
 
 if uploaded_file is not None:
     if uploaded_file.name.endswith(".pdf"):
-      st.write(uploaded_file.read().decode('latin-1'))
+      st.write(base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')
+)
     #   with open(f"data:application/pdf;base64/{uploaded_file.name}", "rb") as f:
     #     base64_pdf = base64.b64encode(f.read()).decode('utf-8')
     #     num_pages = base64_pdf.numPages
