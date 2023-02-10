@@ -8,7 +8,7 @@ import os
 # import asyncio
 import streamlit as st
 
-openai.api_key = "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"
+openai.api_key = "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"
 
 def craft_response(query, msg):
     response = openai.Completion.create(
