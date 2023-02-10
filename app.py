@@ -51,7 +51,7 @@ text_splitter = CharacterTextSplitter(
     chunk_overlap  = 200,
     length_function = len,
 )
-uploaded_file = st.file_uploader("Choose a file first")
+uploaded_file = st.file_uploader("Choose a file first", type="txt")
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
 if uploaded_file is not None:
