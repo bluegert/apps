@@ -26,8 +26,7 @@ if "visibility" not in st.session_state:
 
 def get_similar_terms(text_input, df):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
-    # st.write(df['embedding'][0])
-    st.write(df['embedding'].apply(lambda x: cosine_similarity(x, [search_term_vector[18], search_term_vector[19]])))
+    st.write(df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector)))
 
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
@@ -40,37 +39,75 @@ def get_similar_terms(text_input, df):
     response="remove this"
     return response
 
-uploaded_file = st.file_uploader("Choose a file first", type="csv")
+uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    st.write(df)
+    pdfFileObj = open(uploaded_file, 'rb')
+    st.write(pdfFileObj)
     text_input = st.text_input(
         "Ask a question about Microsoft's latest shareholder meeting 👇",
         label_visibility=st.session_state.visibility,
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
     )
-    response = get_similar_terms(text_input, df)
-    if text_input:
-        st.write("Answer: " + response)
+    # response = get_similar_terms(text_input, df)
+    # if text_input:
+    #     st.write("Answer: " + response)
+
+  
+# # creating a pdf reader object
+# reader = PyPDF2.PdfReader(pdfFileObj)
+  
+# raw_text = ''
+# for i, page in enumerate(reader.pages):
+#     text = page.extract_text()
+#     if text:
+#         raw_text += text
+
+# text_splitter = CharacterTextSplitter(        
+#     separator = "\n",
+#     chunk_size = 1000,
+#     chunk_overlap  = 200,
+#     length_function = len,
+# )
+# texts = text_splitter.split_text(raw_text)
+# embeddings = OpenAIEmbeddings(openai_api_key='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')
+# import pickle
+# # with open("foo.pkl", 'wb') as f:
+# #     pickle.dump(embeddings, f)
+
+# with open("foo.pkl", 'rb') as f: 
+#    new_docsearch = pickle.load(f)
+
+# docsearch = FAISS.from_texts(texts, new_docsearch)
+# print(docsearch)
+# query = "How much will sea level rise"
+# docs = docsearch.similarity_search(query)
+# # # print(docs[0].page_content)
+# # # import pinecone
+# # # pinecone.init(api_key="YOUR_API_KEY",
+# # #               environment="us-west1-gcp")
+
+# # # pinecone.create_index("example-index", dimension=1024)
+# chain = load_qa_chain(OpenAI(temperature=0, openai_api_key='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'), chain_type="stuff")
+# answer = chain.run(input_documents=docs, question=query)
+# print(query)
+# print(answer)
 
 
 
-
-
-#     df = dict(supabase.table("Vec").select("*").execute())
-#     df = pd.DataFrame.from_dict(df['data'])
-#     # df = pd.read_csv('/Users/wesley/AI/chatgpt/earnings_embeddings.csv')
-#     df['embedding'] = df['embedding'].apply(eval).apply(np.array)
-#     df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
-#     sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
-#     # print(sorted_by_similarity.iloc[2,3])
-#     print(sorted_by_similarity.text)
-#     if sorted_by_similarity.iloc[2,3] < 0.8:
-#       response = "Question is out of scope. Please try to rephrase it."
-#     else:
-#       results = sorted_by_similarity['text'].values.tolist()
-#       response = craft_response(query, results)
-#       response = "Q:" + query + " A" + response
-#     # Render the search results template, passing in the search query and results
-#     return render_template('search_results.html', query=query, results=response)
+# #     df = dict(supabase.table("Vec").select("*").execute())
+# #     df = pd.DataFrame.from_dict(df['data'])
+# #     # df = pd.read_csv('/Users/wesley/AI/chatgpt/earnings_embeddings.csv')
+# #     df['embedding'] = df['embedding'].apply(eval).apply(np.array)
+# #     df["similarities"] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
+# #     sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
+# #     # print(sorted_by_similarity.iloc[2,3])
+# #     print(sorted_by_similarity.text)
+# #     if sorted_by_similarity.iloc[2,3] < 0.8:
+# #       response = "Question is out of scope. Please try to rephrase it."
+# #     else:
+# #       results = sorted_by_similarity['text'].values.tolist()
+# #       response = craft_response(query, results)
+# #       response = "Q:" + query + " A" + response
+# #     # Render the search results template, passing in the search query and results
+# #     return render_template('search_results.html', query=query, results=response)
