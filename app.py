@@ -25,9 +25,7 @@ if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
-
 uploaded_file = st.file_uploader("Choose a file", type="csv")
-
 
 def get_similar_terms(text_input):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
@@ -41,8 +39,8 @@ def get_similar_terms(text_input):
 text_input = st.text_input(
     "Ask a question about Microsoft's latest shareholder meeting 👇",
     label_visibility=st.session_state.visibility,
-    disabled=st.session_state.disabled,
-    placeholder=st.session_state.placeholder,
+    disabled=st.session_state.disabled
+    # placeholder=st.session_state.placeholder,
 )
 msg = 'We are profitable'
 # msg = get_similar_terms()
