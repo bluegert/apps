@@ -12,6 +12,7 @@ from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from operator import itemgetter
 import PyPDF2
+import base64
 
 openai.api_key = st.secrets['api_key']
 
