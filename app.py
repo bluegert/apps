@@ -88,8 +88,9 @@ if uploaded_file is not None:
       st.session_state.generated.append(response)
       if st.session_state['generated']:
         for i in range(len(st.session_state['generated'])-1, -1, -1):
-            message(st.session_state["generated"][i], key=str(i))
             message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+            message(st.session_state["generated"][i], key=str(i))
+
 
 
 # # with open("foo.pkl", 'rb') as f: 
