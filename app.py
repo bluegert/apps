@@ -49,9 +49,10 @@ def extract_data(feed):
 
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    df = extract_data(uploaded_file)
+    bytes_data = uploaded_file.getvalue()
+    st.write(bytes_data)
     text_input = st.text_input(
-        "Ask a question about Microsoft's latest shareholder meeting 👇",
+        "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
