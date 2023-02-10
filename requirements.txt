@@ -1,3 +1,4 @@
 openai
 gsheetsdb
 langchain
+langchain.text_splitter
