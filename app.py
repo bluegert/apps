@@ -25,38 +25,35 @@ if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
-col1, col2 = st.columns(2)
+col2 = st.columns(1)
 
-with col1:
-    st.checkbox("Disable text input widget", key="disabled")
-    st.radio(
-        "Set text input label visibility 👉",
-        key="visibility",
-        options=["visible", "hidden", "collapsed"],
-    )
-    st.text_input(
-        "Placeholder for the other text input widget",
-        "This is a placeholder",
-        key="placeholder",
-    )
+uploaded_file = st.file_uploader("Choose a file", type="csv")
+
+
+def get_similar_terms(text_input):
+    search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
+    # df = dict(supabase.table("Vec").select("*").execute())
+    df = pd.DataFrame.from_dict(df['data'])
+    df['similarity'] = df['vec'].apply(lambda x: cosine_similarity(x, search_term_vector))
+    sorted_by_similarity = df.sort_values("similarity", ascending=False).head(3)
+    msg = ''
+    return msg
 
 with col2:
     text_input = st.text_input(
-        "Enter some text 👇",
+        "Ask a question about Microsoft's latest shareholder meeting 👇",
         label_visibility=st.session_state.visibility,
         disabled=st.session_state.disabled,
         placeholder=st.session_state.placeholder,
     )
+    msg = 'We are profitable'
+    # msg = get_similar_terms()
 
     if text_input:
-        st.write("You entered: ", text_input)
+        craft_response(text_input, msg)
+        st.write("Answer: ", text_input)
 
-# @app.route('/search')
-# def search():
-#     # Get the search query from the URL query string
-#     query = request.args.get('query')
 
-#     search_term_vector = get_embedding(query, engine="text-embedding-ada-002")
 #     df = dict(supabase.table("Vec").select("*").execute())
 #     df = pd.DataFrame.from_dict(df['data'])
 #     # df = pd.read_csv('/Users/wesley/AI/chatgpt/earnings_embeddings.csv')
