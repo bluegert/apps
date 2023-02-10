@@ -7,7 +7,6 @@ import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
-import pdfplumber 
 
 openai.api_key = st.secrets['api_key']
 
