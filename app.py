@@ -52,37 +52,39 @@ text_splitter = CharacterTextSplitter(
 uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
     texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
-    embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
-    st.write(texts,embeddings)
-    docsearch = FAISS.from_texts(texts, embeddings)
-    text_input = st.text_input(
-        "Ask a question 👇", # make this custom to the pdf
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled
-        # placeholder=st.session_state.placeholder,
-    )
-    query = "How do I send money"
-    response = docsearch.similarity_search(query)
-    st.write(response)
-    craft_response(query, response)
-    if text_input:
-        st.write("Answer: " + response)
+    text_vectors = []
+    for i in range(len(texts)):
+      text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
+    st.write(text_vectors)
+
+#     text_input = st.text_input(
+#         "Ask a question 👇", # make this custom to the pdf
+#         label_visibility=st.session_state.visibility,
+#         disabled=st.session_state.disabled
+#         # placeholder=st.session_state.placeholder,
+#     )
+#     query = "How do I send money"
+#     response = docsearch.similarity_search(query)
+#     st.write(response)
+#     craft_response(query, response)
+#     if text_input:
+#         st.write("Answer: " + response)
 
 
-# with open("foo.pkl", 'rb') as f: 
-#    new_docsearch = pickle.load(f)
+# # with open("foo.pkl", 'rb') as f: 
+# #    new_docsearch = pickle.load(f)
 
-# docsearch = FAISS.from_texts(texts, new_docsearch)
-# print(docsearch)
-# query = "How much will sea level rise"
-# docs = docsearch.similarity_search(query)
-# # # print(docs[0].page_content)
-# # # import pinecone
-# # # pinecone.init(api_key="YOUR_API_KEY",
-# # #               environment="us-west1-gcp")
+# # docsearch = FAISS.from_texts(texts, new_docsearch)
+# # print(docsearch)
+# # query = "How much will sea level rise"
+# # docs = docsearch.similarity_search(query)
+# # # # print(docs[0].page_content)
+# # # # import pinecone
+# # # # pinecone.init(api_key="YOUR_API_KEY",
+# # # #               environment="us-west1-gcp")
 
-# # # pinecone.create_index("example-index", dimension=1024)
-# chain = load_qa_chain(OpenAI(temperature=0, openai_api_key='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'), chain_type="stuff")
-# answer = chain.run(input_documents=docs, question=query)
-# print(query)
-# print(answer)
+# # # # pinecone.create_index("example-index", dimension=1024)
+# # chain = load_qa_chain(OpenAI(temperature=0, openai_api_key='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'), chain_type="stuff")
+# # answer = chain.run(input_documents=docs, question=query)
+# # print(query)
+# # print(answer)
