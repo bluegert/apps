@@ -53,9 +53,7 @@ text_splitter = CharacterTextSplitter(
     length_function = len,
 )
 uploaded_file = st.file_uploader("Choose a file first")
-
-
-
+st.set_option('deprecation.showfileUploaderEncoding', False)
 
 if uploaded_file is not None:
     if uploaded_file.name.endswith(".pdf"):
@@ -70,8 +68,6 @@ if uploaded_file is not None:
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
-    
-    # topic = find_topic()
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
