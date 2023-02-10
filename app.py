@@ -32,7 +32,7 @@ def get_similar_terms(text_input, text_vectors):
     similarities = []
     for i in range(len(text_vectors)):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
-    sorted_similarities = np.argsort(similarities)
+    sorted_similarities = sorted(similarities)
     st.write(sorted_similarities)
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
