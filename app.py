@@ -26,9 +26,8 @@ if "visibility" not in st.session_state:
 
 def get_similar_terms(text_input, df):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
-    st.write([search_term_vector[18], search_term_vector[19]])
-    st.write(df['embedding'][0])
-    # st.write(df['embedding'].apply(lambda x: cosine_similarity(x, list(search_term_vector))))
+    # st.write(df['embedding'][0])
+    st.write(df['embedding'].apply(lambda x: cosine_similarity(x, [search_term_vector[18], search_term_vector[19]])))
 
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
     # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
