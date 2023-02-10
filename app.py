@@ -1,48 +1,24 @@
 # from flask import Flask, request, render_template
-# import openai
-# from openai.embeddings_utils import get_embedding, cosine_similarity
+import openai
+from openai.embeddings_utils import get_embedding, cosine_similarity
 import pandas as pd
-# import numpy as np
-# import os
+import numpy as np
+import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
 
+openai.api_key = "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"
 
+def craft_response(query, msg):
+    response = openai.Completion.create(
+        engine="text-davinci-002",
+        prompt=f"You are a financial spokesman for Microsoft. A journalist just asked you this question: {query}. In the past you have said the following around this topic: {msg}. Craft an insightful response to the journalist based on the facts presented in your earlier responses. Change as little wording as possible. Keep the answer highly relevant to the question, do not add extra stuff",
+        max_tokens=150
+    )
+    return response.choices[0].text
 
-
-# url: str = "https://dlorxtrnmfxnyttxbsnp.supabase.co"
-# key: str = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRsb3J4dHJubWZ4bnl0dHhic25wIiwicm9sZSI6ImFub24iLCJpYXQiOjE2NzU3NzYxNDQsImV4cCI6MTk5MTM1MjE0NH0.jptsq-8M25X2nfVDDSmNicT7QUoVupQ3_QlM4ee-qCo'
-# supabase: Client = create_client(url, key)
-
-# app = Flask(__name__)
-
-# openai.api_key = "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"
-
-df = pd.DataFrame({
-  'first column': [1, 2, 3, 4],
-  'second column': [10, 20, 30, 40]
-})
-
-st.write(df)
-
-
-# @app.route('/static/')
-# def serve_static(filename):
-#   return app.send_static_file(filename)
-
-# @app.route('/')
-# def search_form():
-#   return render_template('search_form.html')
-
-
-# def craft_response(query, msg):
-#     response = openai.Completion.create(
-#         engine="text-davinci-002",
-#         prompt=f"You are a financial spokesman for Microsoft. A journalist just asked you this question: {query}. In the past you have said the following around this topic: {msg}. Craft an insightful response to the journalist based on the facts presented in your earlier responses. Change as little wording as possible. Keep the answer highly relevant to the question, do not add extra stuff",
-#         max_tokens=150
-#     )
-#     return response.choices[0].text
+st.text_input('Enter your question')
 
 # @app.route('/search')
 # def search():
@@ -64,9 +40,5 @@ st.write(df)
 #       results = sorted_by_similarity['text'].values.tolist()
 #       response = craft_response(query, results)
 #       response = "Q:" + query + " A" + response
-#     supabase.table("QnA").insert([{"Q": query, "A": response}]).execute() # make async
 #     # Render the search results template, passing in the search query and results
 #     return render_template('search_results.html', query=query, results=response)
-
-# if __name__ == '__main__':
-#   app.run()
