@@ -7,10 +7,24 @@ import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
-
-# openai.api_key = ""
+from gsheetsdb import connect
 
 openai.api_key = st.secrets['api_key']
+
+conn = connect()
+
+# Perform SQL query on the Google Sheet.
+# Uses st.cache_data to only rerun when the query changes or after 10 min.
+@st.cache_data(ttl=600)
+def run_query(query):
+    rows = conn.execute(query, headers=1)
+    rows = rows.fetchall()
+    return rows
+
+sheet_url = st.secrets["public_gsheets_url"]
+rows = run_query(f'SELECT * FROM "{sheet_url}"')
+st.write(rows)
+
 
 def craft_response(query, msg):
     response = openai.Completion.create(
@@ -50,7 +64,7 @@ msg = 'We are profitable'
 
 if text_input:
     response = craft_response(text_input, msg)
-    st.write("Answer: ", response)
+    st.write("Answer: " + response)
 
 
 #     df = dict(supabase.table("Vec").select("*").execute())
