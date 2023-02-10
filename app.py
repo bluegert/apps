@@ -7,7 +7,7 @@ import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
-import PyPDF2
+import pdfplumber
 
 openai.api_key = st.secrets['api_key']
 
@@ -39,10 +39,11 @@ def get_similar_terms(text_input, df):
     response="remove this"
     return response
 
+
+
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    pdfFileObj = open(uploaded_file, 'rb')
-    reader = PyPDF2.PdfReader(pdfFileObj)
+    pdfplumber.load(uploaded_file)
     text_input = st.text_input(
         "Ask a question about Microsoft's latest shareholder meeting 👇",
         label_visibility=st.session_state.visibility,
