@@ -55,16 +55,16 @@ text_splitter = CharacterTextSplitter(
 uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
     if uploaded_file.name.endswith(".pdf"):
-      pdffileobj = open(uploaded_file.name,'rb')
-      pdfreader = PyPDF2.PdfFileReader(pdffileobj)
-      num_pages = pdfreader.numPages
-      count = 0
-      text = ""
-      while count < num_pages:
-        pageObj = pdfreader.getPage(count)
-        count +=1
-        text += pageObj.extractText()
-        texts = text_splitter.split_text(text)
+      with open(uploaded_file.name, "rb") as f:
+        base64_pdf = base64.b64encode(f.read()).decode('utf-8')
+        num_pages = base64_pdf.numPages
+        count = 0
+        text = ""
+        while count < num_pages:
+          pageObj = base64_pdf.getPage(count)
+          count +=1
+          text += pageObj.extractText()
+          texts = text_splitter.split_text(text)
     else:
       texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
     text_vectors = []
