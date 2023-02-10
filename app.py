@@ -42,8 +42,7 @@ def get_similar_terms(text_input, df):
 
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 if uploaded_file is not None:
-    pdf = StringIO(uploaded_file)
-    st.write(pdf.read())
+    st.write(uploaded_file.read())
 
 
     text_input = st.text_input(
