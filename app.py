@@ -39,9 +39,17 @@ def get_similar_terms(text_input, df):
     response="remove this"
     return response
 
+text_splitter = CharacterTextSplitter(        
+    separator = "\n",
+    chunk_size = 1000,
+    chunk_overlap  = 200,
+    length_function = len,
+)
+
 uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
-    st.write(uploaded_file)
+    texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    st.write(texts)
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
@@ -52,13 +60,7 @@ if uploaded_file is not None:
     # if text_input:
     #     st.write("Answer: " + response)
 
-# text_splitter = CharacterTextSplitter(        
-#     separator = "\n",
-#     chunk_size = 1000,
-#     chunk_overlap  = 200,
-#     length_function = len,
-# )
-# texts = text_splitter.split_text(raw_text)
+
 
 # embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
 # import pickle
