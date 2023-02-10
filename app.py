@@ -32,7 +32,7 @@ def get_similar_terms(text_input, text_vectors):
     similarities = []
     for i in range(len(text_vectors)):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
-    sorted_texts = sorted(zip(text_vectors[i], similarities), reverse=True)[:3]
+    sorted_texts = sorted(zip(text_input[i], similarities), reverse=True)[:3]
     st.write(sorted_texts)
     return list(zip(*sorted_texts))[0]
     # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
@@ -63,11 +63,11 @@ if uploaded_file is not None:
         disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
     )
+  
     similar_terms = get_similar_terms(text_input, text_vectors)
     response = craft_response(text_input, similar_terms)
     if text_input:
         st.write("Answer: " + response)
-        st.write(similar_terms)
 
 
 # # with open("foo.pkl", 'rb') as f: 
