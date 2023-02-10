@@ -26,33 +26,34 @@ if "visibility" not in st.session_state:
     st.session_state.visibility = "visible"
     st.session_state.disabled = False
 
-uploaded_file = st.file_uploader("Choose a file", type="csv")
-if uploaded_file is not None:
-    dataframe = pd.read_csv(uploaded_file)
-    st.write(dataframe)
-
-
-def get_similar_terms(text_input):
+def get_similar_terms(text_input, df):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
-    # df = dict(supabase.table("Vec").select("*").execute())
-    df = pd.DataFrame.from_dict(df['data'])
     df['similarity'] = df['vec'].apply(lambda x: cosine_similarity(x, search_term_vector))
     sorted_by_similarity = df.sort_values("similarity", ascending=False).head(3)
-    msg = ''
-    return msg
+    if sorted_by_similarity.iloc[2,3] < 0.8:
+        results = "Question is out of scope. Please try to rephrase it."
+    else:
+        results = sorted_by_similarity['text'].values.tolist()
+        response = craft_response(text_input, results)
+        response = "Q:" + text_input + " A" + response
+    return response
 
-text_input = st.text_input(
-    "Ask a question about Microsoft's latest shareholder meeting 👇",
-    label_visibility=st.session_state.visibility,
-    disabled=st.session_state.disabled
-    # placeholder=st.session_state.placeholder,
-)
-msg = 'We are profitable'
-# msg = get_similar_terms()
+uploaded_file = st.file_uploader("Choose a file first", type="csv")
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    st.write(df)
+    text_input = st.text_input(
+        "Ask a question about Microsoft's latest shareholder meeting 👇",
+        label_visibility=st.session_state.visibility,
+        disabled=st.session_state.disabled
+        # placeholder=st.session_state.placeholder,
+    )
+    response = get_similar_terms(text_input, df)
+    if text_input:
+        st.write("Answer: " + response)
 
-if text_input:
-    response = craft_response(text_input, msg)
-    st.write("Answer: " + response)
+
+
 
 
 #     df = dict(supabase.table("Vec").select("*").execute())
