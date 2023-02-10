@@ -49,8 +49,8 @@ msg = 'We are profitable'
 # msg = get_similar_terms()
 
 if text_input:
-    craft_response(text_input, msg)
-    st.write("Answer: ", text_input)
+    response = craft_response(text_input, msg)
+    st.write("Answer: ", response)
 
 
 #     df = dict(supabase.table("Vec").select("*").execute())
