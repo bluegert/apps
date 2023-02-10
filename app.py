@@ -1,11 +1,11 @@
-from flask import Flask, request, render_template
-import openai
-from openai.embeddings_utils import get_embedding, cosine_similarity
+# from flask import Flask, request, render_template
+# import openai
+# from openai.embeddings_utils import get_embedding, cosine_similarity
 import pandas as pd
-import numpy as np
-import os
-from supabase import create_client, Client
-import asyncio
+# import numpy as np
+# import os
+# from supabase import create_client, Client
+# import asyncio
 import streamlit as st
 
 
@@ -17,7 +17,7 @@ import streamlit as st
 
 # app = Flask(__name__)
 
-openai.api_key = "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"
+# openai.api_key = "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"
 
 df = pd.DataFrame({
   'first column': [1, 2, 3, 4],
