@@ -1,7 +1,4 @@
 openai
 gsheetsdb
 langchain
-pickle
-langchain.embeddings.openai
-langchain.vectorstores
 
