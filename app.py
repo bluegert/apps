@@ -7,7 +7,6 @@ import os
 # from supabase import create_client, Client
 # import asyncio
 import streamlit as st
-from io import StringIO
 
 
 openai.api_key = st.secrets['api_key']
@@ -40,11 +39,9 @@ def get_similar_terms(text_input, df):
     response="remove this"
     return response
 
-uploaded_file = st.file_uploader("Choose a file first", type="pdf")
+uploaded_file = st.file_uploader("Choose a file first")
 if uploaded_file is not None:
-    st.write(uploaded_file.read())
-
-
+    st.write(uploaded_file)
     text_input = st.text_input(
         "Ask a question 👇", # make this custom to the pdf
         label_visibility=st.session_state.visibility,
@@ -55,18 +52,6 @@ if uploaded_file is not None:
     # if text_input:
     #     st.write("Answer: " + response)
 
-  
-# # creating a pdf file object
-# pdfFileObj = open('/Users/wesley/AI/chatgpt/data_collection/docs/IPCC_AR6_WGII_SummaryForPolicyMakers.pdf', 'rb')
-  
-# # creating a pdf reader object
-  
-# raw_text = ''
-# for i, page in enumerate(reader.pages):
-#     text = page.extract_text()
-#     if text:
-#         raw_text += text
-
 # text_splitter = CharacterTextSplitter(        
 #     separator = "\n",
 #     chunk_size = 1000,
@@ -74,7 +59,8 @@ if uploaded_file is not None:
 #     length_function = len,
 # )
 # texts = text_splitter.split_text(raw_text)
-# embeddings = OpenAIEmbeddings(openai_api_key='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')
+
+# embeddings = OpenAIEmbeddings(openai_api_key=openai.api_key)
 # import pickle
 # # with open("foo.pkl", 'wb') as f:
 # #     pickle.dump(embeddings, f)
