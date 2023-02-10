@@ -67,16 +67,24 @@ if uploaded_file is not None:
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
-    text_input = st.text_input(
-        "Ask a question 👇", # make this custom to the pdf
-        label_visibility=st.session_state.visibility,
-        disabled=st.session_state.disabled
-        # placeholder=st.session_state.placeholder,
-    )
-    if text_input:
-      similar_terms = get_similar_terms(text_input, text_vectors, texts)
-      response = craft_response(text_input, similar_terms)
-      st.write("Answer: " + response)
+
+      text_input = st.text_input(
+          "Ask a question 👇", # make this custom to the pdf
+          label_visibility=st.session_state.visibility,
+          disabled=st.session_state.disabled
+          # placeholder=st.session_state.placeholder,
+      )
+      
+if text_input:
+  similar_terms = get_similar_terms(text_input, text_vectors, texts)
+  response = craft_response(text_input, similar_terms)
+  st.write("Answer: " + response)
+  st.session_state.past.append(text_input)
+  st.session_state.generated.append(response)
+  if st.session_state['generated']:
+    for i in range(len(st.session_state['generated'])-1, -1, -1):
+        message(st.session_state["generated"][i], key=str(i))
+        message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
 
 
 # # with open("foo.pkl", 'rb') as f: 
