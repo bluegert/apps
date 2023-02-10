@@ -8,7 +8,9 @@ import os
 # import asyncio
 import streamlit as st
 
-openai.api_key = "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"
+# openai.api_key = ""
+
+openai.api_key = st.write("st.secrets['api_key']")
 
 def craft_response(query, msg):
     response = openai.Completion.create(
@@ -19,6 +21,7 @@ def craft_response(query, msg):
     return response.choices[0].text
 
 import streamlit as st
+craft_response('What is the price of Microsoft stock?', 'We are profitable')
 
 # Store the initial value of widgets in session state
 if "visibility" not in st.session_state:
