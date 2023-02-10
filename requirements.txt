@@ -1,2 +1,4 @@
 openai
 gsheetsdb
+PyPDF2
+pdfplumber
