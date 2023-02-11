@@ -84,17 +84,17 @@ if uploaded_file is not None:
       if 'past' not in st.session_state:
           st.session_state['past'] = []
       similar_terms = get_similar_terms(text_input, text_vectors, texts)
-      # user_input_embedding_prompt = 'Using this context: "'+similar_terms+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
-      # response = generate_response(user_input_embedding_prompt)
-      # # if already text generated, build on that
-      # if st.session_state['generated']:
-      #   st.write(st.session_state['generated'])
-      # st.session_state.past.append(text_input)
-      # st.session_state.generated.append(response)
-      # if st.session_state['generated']:
-      #   for i in range(len(st.session_state['generated'])-1):
-      #       message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-      #       message(st.session_state["generated"][i], key=str(i))
+      user_input_embedding_prompt = 'Using this context: "'+similar_terms+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
+      response = generate_response(user_input_embedding_prompt)
+      # if already text generated, build on that
+      if st.session_state['generated']:
+        st.write(st.session_state['generated'])
+      st.session_state.past.append(text_input)
+      st.session_state.generated.append(response)
+      if st.session_state['generated']:
+        for i in range(len(st.session_state['generated'])-1):
+            message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+            message(st.session_state["generated"][i], key=str(i))
 
 # pdf support
 # https://discuss.streamlit.io/t/how-to-display-pdf-files-in-streamlit/1806/2
