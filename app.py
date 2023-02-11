@@ -84,7 +84,6 @@ if uploaded_file is not None:
       if 'past' not in st.session_state:
           st.session_state['past'] = []
       similar_terms = get_similar_terms(text_input, text_vectors, texts)
-      st.write(similar_terms[0])
       # user_input_embedding_prompt = 'Using this context: "'+similar_terms+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
       # response = generate_response(user_input_embedding_prompt)
       # # if already text generated, build on that
@@ -105,3 +104,4 @@ if uploaded_file is not None:
 # multiple files upload
 # making it look nicer
 # data privacy
+# some metric of performance. Can I give the model feedback? Should I?
