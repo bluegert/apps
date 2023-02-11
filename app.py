@@ -21,7 +21,7 @@ from langchain.chains.conversation.memory import ConversationBufferMemory
 
 GoogleDocsReader = download_loader('GoogleDocsReader')
 
-gdoc_ids = ['1wf-y2pd9C878Oh-FmLH7Q_BQkljdm6TQal-c1pUfrec']
+gdoc_ids = ['18lNKQ7EgkAQsqp-hLIZ9MvJw4IKywHCX6GOc-DQatX0']
 loader = GoogleDocsReader()
 documents = loader.load_data(document_ids=gdoc_ids)
 index = GPTSimpleVectorIndex(documents)
