@@ -20,7 +20,7 @@ from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
 
 
- st.write(index)
+#  st.write(index)
 # tools = [
 #     Tool(
 #         name="Google Doc Index",
