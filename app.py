@@ -17,13 +17,22 @@ import base64
 
 openai.api_key = st.secrets['api_key']
 
-def craft_response(query, msg):
-    response = openai.Completion.create(
-        engine="text-davinci-002",
-        prompt=f"A journalist just asked you this question: {query}. In the past you have said the following around this topic: {msg}. Craft an insightful response to the journalist based on the facts presented in your earlier responses. Change as little wording as possible. Keep the answer highly relevant to the question, do not add extra stuff",
-        max_tokens=150
+def generate_response(prompt):
+    one_shot_prompt = '''I am a highly intelligent question answering bot. If you ask me a question that is rooted in truth, I will give you the answer.
+    Q: What is human life expectancy in the United States?
+    A: Human life expectancy in the United States is 78 years.
+    Q: '''+prompt+'''
+    A: '''
+    completions = openai.Completion.create(
+        engine = "text-davinci-003",
+        prompt = one_shot_prompt,
+        max_tokens = 1024,
+        n = 1,
+        stop=["Q:"],
+        temperature=0.2,
     )
-    return response.choices[0].text
+    message = completions.choices[0].text
+    return message
 
 # Store the initial value of widgets in session state
 if "visibility" not in st.session_state:
@@ -37,14 +46,6 @@ def get_similar_terms(text_input, text_vectors, texts):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1), reverse=True)
     return list(zip(*sorted_texts[:3]))
-    # df['similarities'] = df['embedding'].apply(lambda x: cosine_similarity(x, search_term_vector))
-    # sorted_by_similarity = df.sort_values("similarities", ascending=False).head(3)
-    # if sorted_by_similarity.iloc[2,4] < 0.8:
-    #     results = "Question is out of scope. Please try to rephrase it."
-    # else:
-    #     results = sorted_by_similarity['text'].values.tolist()
-    #     response = craft_response(text_input, results)
-    #     response = "Q:" + text_input + " A" + response
 
 text_splitter = CharacterTextSplitter(        
     separator = "\n",
@@ -83,7 +84,8 @@ if uploaded_file is not None:
       if 'past' not in st.session_state:
           st.session_state['past'] = []
       similar_terms = get_similar_terms(text_input, text_vectors, texts)
-      response = craft_response(text_input, similar_terms)
+      user_input_embedding_prompt = 'Using this context: "'+similar_terms+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
+      response = generate_response(user_input_embedding_prompt)
       st.session_state.past.append(text_input)
       st.session_state.generated.append(response)
       if st.session_state['generated']:
@@ -91,22 +93,11 @@ if uploaded_file is not None:
             message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
             message(st.session_state["generated"][i], key=str(i))
 
-
-
-# # with open("foo.pkl", 'rb') as f: 
-# #    new_docsearch = pickle.load(f)
-
-# # docsearch = FAISS.from_texts(texts, new_docsearch)
-# # print(docsearch)
-# # query = "How much will sea level rise"
-# # docs = docsearch.similarity_search(query)
-# # # # print(docs[0].page_content)
-# # # # import pinecone
-# # # # pinecone.init(api_key="YOUR_API_KEY",
-# # # #               environment="us-west1-gcp")
-
-# # # # pinecone.create_index("example-index", dimension=1024)
-# # chain = load_qa_chain(OpenAI(temperature=0, openai_api_key='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'), chain_type="stuff")
-# # answer = chain.run(input_documents=docs, question=query)
-# # print(query)
-# # print(answer)
+# pdf support
+# https://discuss.streamlit.io/t/how-to-display-pdf-files-in-streamlit/1806/2
+# prompts building on each other
+# summarizer
+# better prompts (see youtube gpt)
+# multiple files upload
+# making it look nicer
+# data privacy
