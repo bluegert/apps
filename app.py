@@ -84,7 +84,7 @@ if uploaded_file is not None:
       if 'past' not in st.session_state:
           st.session_state['past'] = []
       similar_terms = get_similar_terms(text_input, text_vectors, texts)
-      user_input_embedding_prompt = 'Using this context: "'+similar_terms+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
+      user_input_embedding_prompt = 'Using this context: "'+str(similar_terms)+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
       st.write(user_input_embedding_prompt)
 #       response = generate_response(user_input_embedding_prompt)
 #       # if already text generated, build on that
