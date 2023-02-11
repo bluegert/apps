@@ -13,3 +13,4 @@ streamlit
 streamlit_chat
 openai
 PyPDF2
+gpt_index
