@@ -51,7 +51,7 @@ def get_context(text_input, text_vectors, texts):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     df = pd.DataFrame({'text': texts, 'similarity': similarities})
     sorted_similarities = df.sort_values(by=['similarity'], ascending=False)
-    return sorted_similarities['text'][0:3]
+    return str(sorted_similarities['text'][0]) + str(sorted_similarities['text'][1]) + str(sorted_similarities['text'][2]) 
 
 def answer_question(pipeline, question: str, context: str) -> Dict:
     input = {"question": question, "context": context}
@@ -72,9 +72,8 @@ if pdf_files:
     if question != "":
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
-            st.write(context)
-            # answer = answer_question(question, context)
-            # st.write(answer)
+            answer = answer_question(question, context)
+            st.write(answer)
     #     del qa_pipeline
     #     del context
     # text_input = st.text_input(
