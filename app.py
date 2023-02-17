@@ -1,12 +1,10 @@
 from typing import Dict
-
 import pandas as pd
 import PyPDF2
 import streamlit as st
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from transformers import AutoTokenizer, BertForQuestionAnswering, pipeline
-
 from io import BytesIO
 
 st.title("Ask PDF Anything")
@@ -83,7 +81,6 @@ def answer_question(pipeline, question: str, context: str) -> Dict:
 
 @st.cache(allow_output_mutation=True)
 def create_context(df):
-
     context = get_relevant_texts(df, topic)
     return context
 
@@ -102,7 +99,6 @@ pdf_files = st.file_uploader(
 if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
-    topic = st.text_input("Enter the topic you want to ask here")
     question = st.text_input("Enter your questions here...")
     if question != "":
         with st.spinner("Searching. Please hold..."):
