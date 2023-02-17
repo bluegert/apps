@@ -11,6 +11,7 @@ from operator import itemgetter
 import openai
 from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
 import os
+from streamlit_chat import message
 
 openai.api_key = st.secrets["api_key"]
 os.environ["OPENAI_API_KEY"] = st.secrets["api_key"]
@@ -83,37 +84,31 @@ if pdf_files:
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
     question = st.text_input("Enter your questions here...")
-    if question != "":
+    if question:
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
             response = chatgpt_chain.run({"context": context, "question": question})
             st.write(response)
-    # text_input = st.text_input(
-        # "Ask a question 👇", # make this custom to the pdf
         # label_visibility=st.session_state.visibility,
         # disabled=st.session_state.disabled
         # placeholder=st.session_state.placeholder,
     # )
 
-#     if text_input:
-#       if 'generated' not in st.session_state:
-#             st.session_state['generated'] = []
+    if question:
+      if 'generated' not in st.session_state:
+            st.session_state['generated'] = []
 
-#       if 'past' not in st.session_state:
-#           st.session_state['past'] = []
-#       similar_terms = get_similar_terms(text_input, text_vectors, texts)
-#       user_input_embedding_prompt = 'Using this context: "'+str(similar_terms[0])+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
-#       st.write(user_input_embedding_prompt)
-# #       response = generate_response(user_input_embedding_prompt)
-# #       # if already text generated, build on that
-# #       if st.session_state['generated']:
-# #         st.write(st.session_state['generated'])
-# #       st.session_state.past.append(text_input)
-# #       st.session_state.generated.append(response)
-# #       if st.session_state['generated']:
-# #         for i in range(len(st.session_state['generated'])-1):
-# #             message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-# #             message(st.session_state["generated"][i], key=str(i))
+      if 'past' not in st.session_state:
+          st.session_state['past'] = []
+      # if already text generated, build on that
+      if st.session_state['generated']:
+        st.write(st.session_state['generated'])
+        st.session_state.past.append(question)
+      st.session_state.generated.append(response)
+      if st.session_state['generated']:
+        for i in range(len(st.session_state['generated'])-1):
+            message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+            message(st.session_state["generated"][i], key=str(i))
 
 # # # pdf support
 # # # https://discuss.streamlit.io/t/how-to-display-pdf-files-in-streamlit/1806/2
