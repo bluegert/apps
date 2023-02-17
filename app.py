@@ -94,11 +94,7 @@ if uploaded_file is not None:
     # else:
     base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')    
     # reader = PdfReader(file=uploaded_file.read().decode('utf-8'))
-    pdf_display = (
-    f'<embed src="data:application/pdf;base64,{base64_pdf}" '
-    'width="800" height="1000" type="application/pdf"></embed>'
-    )
-    st.markdown(pdf_display, unsafe_allow_html=True)
+    st.write(base64_pdf)
     text = ""
     # for page in reader.pages:
     #       text += page.extract_text() + "\n"
