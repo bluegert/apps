@@ -91,7 +91,6 @@ def create_context(df):
 @st.cache(allow_output_mutation=True)
 def start_app():
     with st.spinner("Loading model. Please hold..."):
-        # context = create_context()
         pipeline = get_pipeline()
     return pipeline
 
@@ -105,12 +104,11 @@ if pdf_files:
         df = extract_text_from_pdfs(pdf_files)
     topic = st.text_input("Enter the topic you want to ask here")
     question = st.text_input("Enter your questions here...")
-    st.write(df)
-    # if question != "":
-    #     # pipeline = get_pipeline()
-    #     with st.spinner("Searching. Please hold..."):
-    #         context = create_context(df)
-    #         qa_pipeline = start_app()
+    if question != "":
+        with st.spinner("Searching. Please hold..."):
+            context = create_context(df)
+            st.write(context)
+            # qa_pipeline = start_app()
     #         answer = answer_question(qa_pipeline, question, context)
     #         st.write(answer)
     #     del qa_pipeline
