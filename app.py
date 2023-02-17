@@ -51,7 +51,7 @@ def get_context(text_input, text_vectors, texts):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     df = pd.DataFrame(columns=["text", "similarity"])
     for i in range(len(texts)):
-        df['texts'][i] = texts[i]
+        df['text'][i] = texts[i]
         df['similarity'][i] = similarities[i]
     df = df.sort_values(by=['similarity'], ascending=False)
     return df['text'][0:3]
