@@ -69,14 +69,15 @@ if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
     text_vectors = []
-    st.write(df['text'][0])
-    for i in range(len(df['text'])):
-      text_vectors.append(get_embedding(str(df['text'][0]), engine="text-embedding-ada-002"))
-    question = st.text_input("Enter your questions here...")
-    if question != "":
-        with st.spinner("Searching. Please hold..."):
-            context = get_context(question, text_vectors, df['text'][0])
-            st.write(context)
+    texts = text_splitter(df['text'][0])
+    for i in range(len(texts)):
+      text_vectors.append(get_embedding(texts[i]), engine="text-embedding-ada-002")
+    st.write(text_vectors)
+    # question = st.text_input("Enter your questions here...")
+    # if question != "":
+    #     with st.spinner("Searching. Please hold..."):
+    #         context = get_context(question, text_vectors, df['text'][0])
+    #         st.write(context)
             # answer = answer_question(question, context)
             # st.write(answer)
     #     del qa_pipeline
