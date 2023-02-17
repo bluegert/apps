@@ -11,16 +11,15 @@ from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
 from langchain.vectorstores import FAISS
 from operator import itemgetter
-import PyPDF2
 from streamlit_chat import message
 import base64
 from gpt_index import GPTSimpleVectorIndex, download_loader
 from langchain.agents import initialize_agent, Tool
 from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
+from PyPDF2 import PdfReader
 
 
-#  st.write(index)
 # tools = [
 #     Tool(
 #         name="Google Doc Index",
@@ -47,7 +46,7 @@ def generate_response(prompt):
     completions = openai.Completion.create(
         engine = "text-davinci-003",
         prompt = one_shot_prompt,
-        max_tokens = 1024,
+        max_tokens = 2048,
         n = 1,
         stop=["Q:"],
         temperature=0.2,
@@ -68,13 +67,20 @@ def get_similar_terms(text_input, text_vectors, texts):
     sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1), reverse=True)
     return list(zip(*sorted_texts[:3]))
 
+def clean_text(serie):
+    serie = serie.replace('\n', ' ')
+    serie = serie.replace('\\n', ' ')
+    serie = serie.replace('  ',' ')
+    serie = serie.replace('  ',' ')
+    return serie
+
 text_splitter = CharacterTextSplitter(        
     separator = "\n",
     chunk_size = 1000,
     chunk_overlap  = 200,
     length_function = len,
 )
-uploaded_file = st.file_uploader("Choose a file first", type="txt")
+uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
 if uploaded_file is not None:
@@ -86,7 +92,12 @@ if uploaded_file is not None:
     # )
     #   st.markdown(pdf_display, unsafe_allow_html=True)
     # else:
-    texts = text_splitter.split_text(uploaded_file.read().decode("utf-8"))
+    reader = PdfReader(file=uploaded_file)
+    text = ""
+    for page in reader.pages:
+          text += page.extract_text() + "\n"
+    text = clean_text(text)
+    texts = text_splitter.split_text(text)
     text_vectors = []
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
@@ -105,18 +116,18 @@ if uploaded_file is not None:
       if 'past' not in st.session_state:
           st.session_state['past'] = []
       similar_terms = get_similar_terms(text_input, text_vectors, texts)
-      user_input_embedding_prompt = 'Using this context: "'+str(similar_terms[0])+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
+      user_input_embedding_prompt = 'Using this context: "'+str(similar_terms[0])+'", answer the following question changing staying entirely true to the context:'+ text_input
       st.write(user_input_embedding_prompt)
-#       response = generate_response(user_input_embedding_prompt)
-#       # if already text generated, build on that
-#       if st.session_state['generated']:
-#         st.write(st.session_state['generated'])
-#       st.session_state.past.append(text_input)
-#       st.session_state.generated.append(response)
-#       if st.session_state['generated']:
-#         for i in range(len(st.session_state['generated'])-1):
-#             message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-#             message(st.session_state["generated"][i], key=str(i))
+      response = generate_response(user_input_embedding_prompt)
+      # if already text generated, build on that
+      if st.session_state['generated']:
+        st.write(st.session_state['generated'])
+      st.session_state.past.append(text_input)
+      st.session_state.generated.append(response)
+      if st.session_state['generated']:
+        for i in range(len(st.session_state['generated'])-1):
+            message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+            message(st.session_state["generated"][i], key=str(i))
 
 # # pdf support
 # # https://discuss.streamlit.io/t/how-to-display-pdf-files-in-streamlit/1806/2
