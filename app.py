@@ -60,11 +60,10 @@ pdf_files = st.file_uploader(
 
 template = """Given the following extracted parts of a long document and a question, create a final answer with references ("SOURCES"). 
 If you don't know the answer, just say that you don't know. Don't try to make up an answer.
-Return a "SOURCES" part in your answer if you know the full source, otherwise don't return sources.
 
 QUESTION: {question}
 =========
-CONTEXT: {output_text}
+CONTEXT: {context}
 :"""
 PROMPT = PromptTemplate(template=template, input_variables=["context", "question"])
 
