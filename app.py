@@ -49,9 +49,10 @@ def get_context(text_input, text_vectors, texts):
     similarities = []
     for i in range(len(text_vectors)):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
-    sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1), reverse=True)
-    st.write(sorted_texts)
-    return list(zip(*sorted_texts[:3]))
+    st.write(similarities)
+    # sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1), reverse=True)
+    # st.write(sorted_texts)
+    # return list(zip(*sorted_texts[:3]))
 
 def answer_question(pipeline, question: str, context: str) -> Dict:
     input = {"question": question, "context": context}
