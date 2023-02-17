@@ -64,7 +64,7 @@ if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
     text_vectors = []
-    texts = text_splitter(df['text'])
+    texts = text_splitter.split_text(df['text'])
     st.write(texts)
     # for i in range(len(texts)):
     #   text_vectors.append(get_embedding(texts[i]), engine="text-embedding-ada-002")
