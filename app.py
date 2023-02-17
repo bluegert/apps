@@ -53,9 +53,9 @@ def get_context(text_input, text_vectors, texts):
     sorted_similarities = df.sort_values(by=['similarity'], ascending=False)
     return str(sorted_similarities['text'][0]) + str(sorted_similarities['text'][1]) + str(sorted_similarities['text'][2]) 
 
-def answer_question(pipeline, question: str, context: str) -> Dict:
+def answer_question(question: str, context: str) -> Dict:
     input = {"question": question, "context": context}
-    return pipeline(input)
+    return input
 
 pdf_files = st.file_uploader(
     "Upload pdf files", type=["pdf"], accept_multiple_files=True
