@@ -92,7 +92,7 @@ if uploaded_file is not None:
     # )
     #   st.markdown(pdf_display, unsafe_allow_html=True)
     # else:
-    base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')    
+    base64_pdf = base64.b64encode(uploaded_file.read()).decode('latin-1')    
     # reader = PdfReader(file=uploaded_file.read().decode('utf-8'))
     st.write(base64_pdf)
     text = ""
