@@ -17,8 +17,8 @@ from gpt_index import GPTSimpleVectorIndex, download_loader
 from langchain.agents import initialize_agent, Tool
 from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
-from pdfrw import PdfReader, PdfWriter, PageMerge, IndirectPdfDict
-
+from io import BytesIO
+import PyPDF2
 
 # tools = [
 #     Tool(
@@ -83,19 +83,37 @@ text_splitter = CharacterTextSplitter(
 uploaded_file = st.file_uploader("Choose a file first", type="pdf")
 st.set_option('deprecation.showfileUploaderEncoding', False)
 
-if uploaded_file is not None:
-    # if uploaded_file.name.endswith(".pdf"):
-    #   base64_pdf = base64.b64encode(uploaded_file.read()).decode('utf-8')
-    #   pdf_display = (
-    #     f'<embed src="data:application/pdf;base64,{base64_pdf}" '
-    # 'width="800" height="1000" type="application/pdf"></embed>'
-    # )
-    #   st.markdown(pdf_display, unsafe_allow_html=True)
-    # else:
-    pdf = PdfReader(uploaded_file)
+@st.cache(allow_output_mutation=True)
+def extract_text_from_pdfs(pdf_files):
+    # Create an empty data frame
+    df = pd.DataFrame(columns=["file", "text"])
+    # Iterate over the PDF files
+    for pdf_file in pdf_files:
+        # Open the PDF file
+        # with open(pdf_file.read(), "rb") as f:
+        with BytesIO(pdf_file.read()) as f:
+            # Create a PDF reader object
+            pdf_reader = PyPDF2.PdfReader(f)
+            # Get the number of pages in the PDF
+            num_pages = len(pdf_reader.pages)
+            # Initialize a string to store the text from the PDF
+            text = ""
+            # Iterate over all the pages
+            for page_num in range(num_pages):
+                # Get the page object
+                page = pdf_reader.pages[page_num]
+                # Extract the text from the page
+                page_text = page.extract_text()
+                # Add the page text to the overall text
+                text += page_text
+            # Add the file name and the text to the data frame
+            df = df.append({"file": pdf_file.name, "text": text}, ignore_index=True)
+    # Return the data frame
+    return 
 
-    # reader = PdfReader(file=uploaded_file.read().decode('utf-8'))
-    st.write(pdf)
+if uploaded_file is not None:
+    text = extract_text_from_pdfs(uploaded_file)
+    st.write(text)
     text = ""
     # for page in reader.pages:
     #       text += page.extract_text() + "\n"
