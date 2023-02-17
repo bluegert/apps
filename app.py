@@ -37,13 +37,12 @@ def extract_text_from_pdfs(pdf_files):
     return df
 
 @st.cache(allow_output_mutation=True)
-def get_relevant_texts(df):
+def get_relevant_texts(df, question):
     cosine_threshold = 0.3  # set threshold for cosine similarity value
-    queries = topic  # search query
     results = []
     for i, document in enumerate(df["sentences"]):
         sentence_embeddings = model_embedding.encode(document)
-        query_embedding = model_embedding.encode(queries)
+        query_embedding = model_embedding.encode(question)
         for j, sentence_embedding in enumerate(sentence_embeddings):
             distance = cosine_similarity(
                 sentence_embedding.reshape((1, -1)), query_embedding.reshape((1, -1))
@@ -78,13 +77,6 @@ def answer_question(pipeline, question: str, context: str) -> Dict:
     input = {"question": question, "context": context}
     return pipeline(input)
 
-
-@st.cache(allow_output_mutation=True)
-def create_context(df):
-    context = get_relevant_texts(df, topic)
-    return context
-
-
 @st.cache(allow_output_mutation=True)
 def start_app():
     with st.spinner("Loading model. Please hold..."):
@@ -102,7 +94,7 @@ if pdf_files:
     question = st.text_input("Enter your questions here...")
     if question != "":
         with st.spinner("Searching. Please hold..."):
-            context = create_context(df)
+            context = get_relevant_texts(df, question)
             st.write(context)
             # qa_pipeline = start_app()
     #         answer = answer_question(qa_pipeline, question, context)
