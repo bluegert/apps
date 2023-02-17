@@ -10,8 +10,10 @@ from openai.embeddings_utils import get_embedding, cosine_similarity
 from operator import itemgetter
 import openai
 from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
+import os
 
 openai.api_key = st.secrets["api_key"]
+os.environ["OPENAI_API_KEY"] = st.secrets["api_key"]
 
 st.title("Ask PDF Anything")
 @st.cache(allow_output_mutation=True)
