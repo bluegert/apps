@@ -17,7 +17,7 @@ from gpt_index import GPTSimpleVectorIndex, download_loader
 from langchain.agents import initialize_agent, Tool
 from langchain.llms import OpenAI
 from langchain.chains.conversation.memory import ConversationBufferMemory
-from PyPDF2 import PdfReader
+from pdfrw import PdfReader, PdfWriter, PageMerge, IndirectPdfDict
 
 
 # tools = [
@@ -92,9 +92,10 @@ if uploaded_file is not None:
     # )
     #   st.markdown(pdf_display, unsafe_allow_html=True)
     # else:
-    base64_pdf = base64.b64encode(uploaded_file.read()).decode('latin-1')    
+    pdf = PdfReader(uploaded_file)
+
     # reader = PdfReader(file=uploaded_file.read().decode('utf-8'))
-    st.write(base64_pdf)
+    st.write(pdf)
     text = ""
     # for page in reader.pages:
     #       text += page.extract_text() + "\n"
