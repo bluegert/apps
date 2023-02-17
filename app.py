@@ -86,7 +86,7 @@ if pdf_files:
     if question != "":
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
-            response = chatgpt_chain.generate({"context": context, "question": question})
+            response = chatgpt_chain.run({"context": context, "question": question})
             st.write(response)
     # text_input = st.text_input(
         # "Ask a question 👇", # make this custom to the pdf
