@@ -80,20 +80,17 @@ if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
     text_vectors = []
-    texts = ""
+    texts = []
     for i in range(len(df)):
-      texts += text_splitter.split_text(df['text'][i])
+      texts.extend(text_splitter.split_text(df['text'][i]))
     for i in range(len(texts)):
       text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
     question = st.text_input("Enter your questions here...")
     if question:
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
+            st.write(context)
             response = chatgpt_chain.run({"context": context, "question": question})
-        # label_visibility=st.session_state.visibility,
-        # disabled=st.session_state.disabled
-        # placeholder=st.session_state.placeholder,
-    # )
 
     if question:
         if 'generated' not in st.session_state:
