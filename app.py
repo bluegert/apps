@@ -8,7 +8,9 @@ from io import BytesIO
 from langchain.text_splitter import CharacterTextSplitter
 from openai.embeddings_utils import get_embedding, cosine_similarity
 from operator import itemgetter
+import openai
 
+openai.api_key = st.secrets["api_key"]
 
 st.title("Ask PDF Anything")
 @st.cache(allow_output_mutation=True)
@@ -81,6 +83,46 @@ if pdf_files:
             # st.write(answer)
     #     del qa_pipeline
     #     del context
+    # text_input = st.text_input(
+        # "Ask a question 👇", # make this custom to the pdf
+        # label_visibility=st.session_state.visibility,
+        # disabled=st.session_state.disabled
+        # placeholder=st.session_state.placeholder,
+    # )
+
+#     if text_input:
+#       if 'generated' not in st.session_state:
+#             st.session_state['generated'] = []
+
+#       if 'past' not in st.session_state:
+#           st.session_state['past'] = []
+#       similar_terms = get_similar_terms(text_input, text_vectors, texts)
+#       user_input_embedding_prompt = 'Using this context: "'+str(similar_terms[0])+'", answer the following question changing as little wording as possible of the context. \n'+ text_input
+#       st.write(user_input_embedding_prompt)
+# #       response = generate_response(user_input_embedding_prompt)
+# #       # if already text generated, build on that
+# #       if st.session_state['generated']:
+# #         st.write(st.session_state['generated'])
+# #       st.session_state.past.append(text_input)
+# #       st.session_state.generated.append(response)
+# #       if st.session_state['generated']:
+# #         for i in range(len(st.session_state['generated'])-1):
+# #             message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+# #             message(st.session_state["generated"][i], key=str(i))
+
+# # # pdf support
+# # # https://discuss.streamlit.io/t/how-to-display-pdf-files-in-streamlit/1806/2
+# # # prompts building on each other
+# # # summarizer
+# # # better prompts (see youtube gpt)
+# # # multiple files upload
+# # # making it look nicer
+# # # data privacy
+# # # some metric of performance. Can I give the model feedback? Should I?
+# # organization key or private key
+# # pinecone
+# # the ideal dataset over time becomes more and more specific to the user and in Q&A format
+# # check if embedding already exists
     # text_input = st.text_input(
         # "Ask a question 👇", # make this custom to the pdf
         # label_visibility=st.session_state.visibility,
