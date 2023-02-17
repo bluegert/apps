@@ -17,7 +17,7 @@ openai.api_key = st.secrets["api_key"]
 os.environ["OPENAI_API_KEY"] = st.secrets["api_key"]
 
 st.title("Ask PDF Anything")
-@st.cache(allow_output_mutation=True)
+@st.cache_resource()
 def extract_text_from_pdfs(pdf_files):
     # Create an empty data frame
     df = pd.DataFrame(columns=["file", "text"])
@@ -47,7 +47,7 @@ def extract_text_from_pdfs(pdf_files):
 
 text_splitter = TokenTextSplitter(chunk_size = 200, chunk_overlap = 40)
 
-@st.cache(allow_output_mutation=True)
+@st.cache_resource()
 def get_context(text_input, text_vectors, texts):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
     similarities = []
@@ -94,19 +94,17 @@ if pdf_files:
     # )
 
     if question:
-      if 'generated' not in st.session_state:
-            st.session_state['generated'] = []
+        if 'generated' not in st.session_state:
+          st.session_state['generated'] = []
 
-      if 'past' not in st.session_state:
+        if 'past' not in st.session_state:
           st.session_state['past'] = []
-      # if already text generated, build on that
-      if st.session_state['generated']:
         st.session_state.past.append(question)
-      st.session_state.generated.append(response)
-      if st.session_state['generated']:
-        for i in range(len(st.session_state['generated'])-1):
-            message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-            message(st.session_state["generated"][i], key=str(i))
+        st.session_state.generated.append(response)
+        if st.session_state['generated']:
+          for i in range(len(st.session_state['generated'])-1, -1, -1):
+              message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+              message(st.session_state["generated"][i], key=str(i))
 
 # prompts building on each other
 # summarizer
