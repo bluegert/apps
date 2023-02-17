@@ -11,7 +11,6 @@ from io import BytesIO
 
 st.title("Question-Answering Webapp")
 
-
 @st.cache(allow_output_mutation=True)
 def extract_text_from_pdfs(pdf_files):
     # Create an empty data frame
