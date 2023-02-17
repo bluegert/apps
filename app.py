@@ -48,6 +48,7 @@ text_splitter = CharacterTextSplitter(
     length_function = len,
 )
 
+@st.cache(allow_output_mutation=True)
 def get_context(text_input, text_vectors, texts):
     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
     similarities = []
@@ -55,10 +56,6 @@ def get_context(text_input, text_vectors, texts):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     sorted_texts = sorted(list(zip(texts, similarities)),key=itemgetter(1), reverse=True)
     return list(zip(*sorted_texts[:3]))
-
-@st.cache(allow_output_mutation=True)
-def get_context(df, question):
-    pass
 
 def answer_question(pipeline, question: str, context: str) -> Dict:
     input = {"question": question, "context": context}
@@ -77,7 +74,7 @@ if pdf_files:
     question = st.text_input("Enter your questions here...")
     if question != "":
         with st.spinner("Searching. Please hold..."):
-            context = get_context(question, text_vectors, df['text'])
+            context = get_context(question, text_vectors, df['text'][0])
             st.write(context)
             # answer = answer_question(question, context)
             # st.write(answer)
