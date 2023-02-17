@@ -37,52 +37,12 @@ def extract_text_from_pdfs(pdf_files):
     return df
 
 @st.cache(allow_output_mutation=True)
-def get_relevant_texts(df, question):
-    cosine_threshold = 0.3  # set threshold for cosine similarity value
-    results = []
-    for i, document in enumerate(df["sentences"]):
-        sentence_embeddings = model_embedding.encode(document)
-        query_embedding = model_embedding.encode(question)
-        for j, sentence_embedding in enumerate(sentence_embeddings):
-            distance = cosine_similarity(
-                sentence_embedding.reshape((1, -1)), query_embedding.reshape((1, -1))
-            )[0][0]
-            sentence = df["sentences"].iloc[i][j]
-            results += [(i, sentence, distance)]
-    results = sorted(results, key=lambda x: x[2], reverse=True)
-    del model_embedding
-
-    texts = []
-    for idx, sentence, distance in results:
-        if distance > cosine_threshold:
-            text = sentence
-            texts.append(text)
-    # turn the list to string
-    context = "".join(texts)
-    return context
-
-
-@st.cache(allow_output_mutation=True)
-def get_pipeline():
-    modelname = "deepset/bert-base-cased-squad2"
-    model_qa = BertForQuestionAnswering.from_pretrained(modelname)
-    # model_qa.save_pretrained(modelname)
-    tokenizer = AutoTokenizer.from_pretrained("tokenizer-deepset")
-    # tokenizer.save_pretrained("tokenizer-" + modelname)
-    qa = pipeline("question-answering", model=model_qa, tokenizer=tokenizer)
-    return qa
-
+def get_context(df, question):
+    pass
 
 def answer_question(pipeline, question: str, context: str) -> Dict:
     input = {"question": question, "context": context}
     return pipeline(input)
-
-@st.cache(allow_output_mutation=True)
-def start_app():
-    with st.spinner("Loading model. Please hold..."):
-        pipeline = get_pipeline()
-    return pipeline
-
 
 pdf_files = st.file_uploader(
     "Upload pdf files", type=["pdf"], accept_multiple_files=True
@@ -92,12 +52,12 @@ if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
     question = st.text_input("Enter your questions here...")
-    if question != "":
-        with st.spinner("Searching. Please hold..."):
-            context = get_relevant_texts(df, question)
-            st.write(context)
-            # qa_pipeline = start_app()
-    #         answer = answer_question(qa_pipeline, question, context)
-    #         st.write(answer)
+    st.write(df['text'])
+    # if question != "":
+    #     with st.spinner("Searching. Please hold..."):
+    #         context = get_context(df, question)
+    #         st.write(context)
+            # answer = answer_question(question, context)
+            # st.write(answer)
     #     del qa_pipeline
     #     del context
