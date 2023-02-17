@@ -9,8 +9,7 @@ from transformers import AutoTokenizer, BertForQuestionAnswering, pipeline
 
 from io import BytesIO
 
-st.title("Question-Answering Webapp")
-
+st.title("Ask PDF Anything")
 @st.cache(allow_output_mutation=True)
 def extract_text_from_pdfs(pdf_files):
     # Create an empty data frame
@@ -39,28 +38,8 @@ def extract_text_from_pdfs(pdf_files):
     # Return the data frame
     return df
 
-
-def preprocess_text(text_list):
-    # Initialize a empty list to store the pre-processed text
-    processed_text = []
-    # Iterate over the text in the list
-    for text in text_list:
-        num_words = len(text.split(" "))
-        if num_words > 10:  # only include sentences with length >10
-            processed_text.append(text)
-    # Return the pre-processed text
-    return processed_text
-
-
-def remove_short_sentences(df):
-    df["sentences"] = df["sentences"].apply(preprocess_text)
-    return df
-
-
 @st.cache(allow_output_mutation=True)
-def get_relevant_texts(df, topic):
-    model_embedding = SentenceTransformer("all-MiniLM-L6-v2")
-    model_embedding.save("all-MiniLM-L6-v2")
+def get_relevant_texts(df):
     cosine_threshold = 0.3  # set threshold for cosine similarity value
     queries = topic  # search query
     results = []
@@ -104,13 +83,6 @@ def answer_question(pipeline, question: str, context: str) -> Dict:
 
 @st.cache(allow_output_mutation=True)
 def create_context(df):
-    # path = "data/"
-    # files = Path(path).glob("WHR+22.pdf")
-    # df = extract_text_from_pdfs(files)
-    df["sentences"] = df["text"].apply(
-        lambda long_str: long_str.replace("\n", " ").split(".")
-    )
-    df = remove_short_sentences(df)
 
     context = get_relevant_texts(df, topic)
     return context
@@ -131,17 +103,15 @@ pdf_files = st.file_uploader(
 if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
-        # context = create_context(df)
-        # del df
     topic = st.text_input("Enter the topic you want to ask here")
     question = st.text_input("Enter your questions here...")
-
-    if question != "":
-        # pipeline = get_pipeline()
-        with st.spinner("Searching. Please hold..."):
-            context = create_context(df)
-            qa_pipeline = start_app()
-            answer = answer_question(qa_pipeline, question, context)
-            st.write(answer)
-        del qa_pipeline
-        del context
+    st.write(df)
+    # if question != "":
+    #     # pipeline = get_pipeline()
+    #     with st.spinner("Searching. Please hold..."):
+    #         context = create_context(df)
+    #         qa_pipeline = start_app()
+    #         answer = answer_question(qa_pipeline, question, context)
+    #         st.write(answer)
+    #     del qa_pipeline
+    #     del context
