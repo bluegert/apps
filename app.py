@@ -69,8 +69,9 @@ if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
     text_vectors = []
+    st.write(df['text'][0])
     for i in range(len(df['text'])):
-      text_vectors.append(get_embedding(df['text'][0], engine="text-embedding-ada-002"))
+      text_vectors.append(get_embedding(str(df['text'][0]), engine="text-embedding-ada-002"))
     question = st.text_input("Enter your questions here...")
     if question != "":
         with st.spinner("Searching. Please hold..."):
