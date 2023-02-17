@@ -5,7 +5,7 @@ import streamlit as st
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from io import BytesIO
-from langchain.text_splitter import CharacterTextSplitter
+from langchain.text_splitter import TokenTextSplitter
 from openai.embeddings_utils import get_embedding, cosine_similarity
 from operator import itemgetter
 import openai
@@ -41,12 +41,7 @@ def extract_text_from_pdfs(pdf_files):
     # Return the data frame
     return df
 
-text_splitter = CharacterTextSplitter(        
-    separator = "\n",
-    chunk_size = 1000,
-    chunk_overlap  = 200,
-    length_function = len,
-)
+text_splitter = TokenTextSplitter(chunk_size = 200, chunk_overlap = 40)
 
 @st.cache(allow_output_mutation=True)
 def get_context(text_input, text_vectors, texts):
