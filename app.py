@@ -9,6 +9,7 @@ from langchain.text_splitter import TokenTextSplitter
 from openai.embeddings_utils import get_embedding, cosine_similarity
 from operator import itemgetter
 import openai
+from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
 
 openai.api_key = st.secrets["api_key"]
 
@@ -53,12 +54,24 @@ def get_context(text_input, text_vectors, texts):
     sorted_similarities = df.sort_values(by=['similarity'], ascending=False)
     return str(sorted_similarities['text'][0]) + str(sorted_similarities['text'][1]) + str(sorted_similarities['text'][2]) 
 
-def answer_question(question: str, context: str) -> Dict:
-    input = {"question": question, "context": context}
-    return input
-
 pdf_files = st.file_uploader(
     "Upload pdf files", type=["pdf"], accept_multiple_files=True
+)
+
+template = """Given the following extracted parts of a long document and a question, create a final answer with references ("SOURCES"). 
+If you don't know the answer, just say that you don't know. Don't try to make up an answer.
+Return a "SOURCES" part in your answer if you know the full source, otherwise don't return sources.
+
+QUESTION: {question}
+=========
+CONTEXT: {output_text}
+:"""
+PROMPT = PromptTemplate(template=template, input_variables=["context", "question"])
+
+chatgpt_chain = LLMChain(
+    llm=OpenAI(temperature=0), 
+    prompt=PROMPT, 
+    verbose=True,
 )
 
 if pdf_files:
@@ -72,10 +85,8 @@ if pdf_files:
     if question != "":
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
-            answer = answer_question(question, context)
-            st.write(answer)
-    #     del qa_pipeline
-    #     del context
+            response = chatgpt_chain.generate(context=context, question=question)
+            st.write(response)
     # text_input = st.text_input(
         # "Ask a question 👇", # make this custom to the pdf
         # label_visibility=st.session_state.visibility,
