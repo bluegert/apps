@@ -90,7 +90,7 @@ if pdf_files:
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
             response = chatgpt_chain.run({"context": context, "question": question})
-            st.write(response)
+            st.write(st.markdown(response))
             st.write(context)
     # if question:
     #     if 'generated' not in st.session_state:
