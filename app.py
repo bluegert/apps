@@ -71,7 +71,7 @@ CONTEXT: {context}
 PROMPT = PromptTemplate(template=template, input_variables=["context", "question"])
 
 chatgpt_chain = LLMChain(
-    llm=OpenAI(temperature=0), 
+    llm=OpenAI(temperature=0.3), 
     prompt=PROMPT, 
     verbose=True,
 )
@@ -89,23 +89,17 @@ if pdf_files:
     if question:
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
-            st.write(context)
             response = chatgpt_chain.run({"context": context, "question": question})
+            st.write(response)
+    # if question:
+    #     if 'generated' not in st.session_state:
+    #       st.session_state['generated'] = []
 
-    if question:
-        if 'generated' not in st.session_state:
-          st.session_state['generated'] = []
-
-        if 'past' not in st.session_state:
-          st.session_state['past'] = []
-        st.session_state.past.append(question)
-        st.session_state.generated.append(response)
-        if st.session_state['generated']:
-          for i in range(len(st.session_state['generated'])-1, -1, -1):
-              message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-              message(st.session_state["generated"][i], key=str(i))
-
-# prompts building on each other
-# summarizer
-# multiple files upload
-# making it look nicer
+    #     if 'past' not in st.session_state:
+    #       st.session_state['past'] = []
+    #     st.session_state.past.append(question)
+    #     st.session_state.generated.append(response)
+    #     if st.session_state['generated']:
+    #       for i in range(len(st.session_state['generated'])-1, -1, -1):
+    #           message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
+    #           message(st.session_state["generated"][i], key=str(i))
