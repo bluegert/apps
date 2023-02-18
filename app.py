@@ -91,6 +91,7 @@ if pdf_files:
             context = get_context(question, text_vectors, texts)
             response = chatgpt_chain.run({"context": context, "question": question})
             st.write(response)
+            st.write(context)
     # if question:
     #     if 'generated' not in st.session_state:
     #       st.session_state['generated'] = []
