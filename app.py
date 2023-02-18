@@ -71,7 +71,7 @@ CONTEXT: {context}
 PROMPT = PromptTemplate(template=template, input_variables=["context", "question"])
 
 chatgpt_chain = LLMChain(
-    llm=OpenAI(temperature=0.3), 
+    llm=OpenAI(temperature=0), 
     prompt=PROMPT, 
     verbose=True,
 )
