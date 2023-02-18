@@ -55,7 +55,6 @@ def get_context(text_input, text_vectors, texts):
         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
     df = pd.DataFrame({'text': texts, 'similarity': similarities})
     sorted_similarities = df.sort_values(by=['similarity'], ascending=False, ignore_index=True)
-    st.write(sorted_similarities)
     return str(sorted_similarities['text'][0]) + str(sorted_similarities['text'][1]) + str(sorted_similarities['text'][2])
 
 pdf_files = st.file_uploader(
