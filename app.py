@@ -61,7 +61,7 @@ pdf_files = st.file_uploader(
     "Upload pdf files", type=["pdf"], accept_multiple_files=True
 )
 
-template = """Given the following extracted parts of a long document and a question. 
+template = """You are a highly intelligent question answering bot. Given the following extracted parts of a long document create a response to the question. Stick entirely to the facts given within the context. 
 If you don't know the answer, just say that you don't know. Don't try to make up an answer.
 
 QUESTION: {question}
