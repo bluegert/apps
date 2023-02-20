@@ -98,21 +98,26 @@ chatgpt_chain = LLMChain(
     verbose=True,
 )
 
+tab1, tab2 = st.tabs(["Chat", "Data"])
+
 retriever = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
 
 if pdf_files:
-    with st.spinner("processing pdf..."):
-        df = extract_text_from_pdfs(pdf_files)
-    text_vectors = []
-    texts = []
-    for i in range(len(df)):
-      texts.extend(text_splitter.split_text(df['text'][i]))
-    text_vectors = retriever.encode(texts)
-    # text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
-    question = st.text_input("Enter your questions here...")
-    if question:
-        with st.spinner("Searching. Please hold..."):
-            context = get_context(question, text_vectors, texts)
-        response = extract_answer(PROMPT.format(context=context, question=question))
-            # response = performRequestWithStreaming(PROMPT.format(context=context, question=question))
-            # response = chatgpt_chain.run({"context": context, "question": question})
+      with st.spinner("processing pdf..."):
+          df = extract_text_from_pdfs(pdf_files)
+      text_vectors = []
+      texts = []
+      for i in range(len(df)):
+        texts.extend(text_splitter.split_text(df['text'][i]))
+      text_vectors = retriever.encode(texts)
+      with tab2:
+        st.write(text_vectors)
+      # text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
+      with tab1:
+        question = st.text_input("Enter your questions here...")
+        if question:
+            with st.spinner("Searching. Please hold..."):
+                context = get_context(question, text_vectors, texts)
+            response = extract_answer(PROMPT.format(context=context, question=question))
+                # response = performRequestWithStreaming(PROMPT.format(context=context, question=question))
+                # response = chatgpt_chain.run({"context": context, "question": question})
