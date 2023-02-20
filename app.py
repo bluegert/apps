@@ -12,7 +12,6 @@ import openai
 from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
 import os
 from streamlit_chat import message
-import sseclient
 import requests
 import json
 import sys
