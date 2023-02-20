@@ -16,3 +16,4 @@ PyPDF2
 gpt_index
 pdfrw
 sentence_transformers
+sseclient
