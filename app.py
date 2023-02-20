@@ -12,6 +12,10 @@ import openai
 from langchain import OpenAI, ConversationChain, LLMChain, PromptTemplate
 import os
 from streamlit_chat import message
+import sseclient
+import requests
+import json
+import sys
 
 openai.api_key = st.secrets["api_key"]
 os.environ["OPENAI_API_KEY"] = st.secrets["api_key"]
@@ -48,14 +52,33 @@ def extract_text_from_pdfs(pdf_files):
 text_splitter = TokenTextSplitter(chunk_size = 200, chunk_overlap = 40)
 
 @st.cache_resource()
-def get_context(text_input, text_vectors, texts):
-    search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
+def get_context(question, text_vectors, texts):
+    # generate embeddings for the question
+    xq = retriever.encode([question]).tolist()
     similarities = []
     for i in range(len(text_vectors)):
-        similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
+        similarities.append(cosine_similarity(text_vectors[i], xq[0]))
     df = pd.DataFrame({'text': texts, 'similarity': similarities})
     sorted_similarities = df.sort_values(by=['similarity'], ascending=False, ignore_index=True)
     return str(sorted_similarities['text'][0]) + str(sorted_similarities['text'][1]) + str(sorted_similarities['text'][2])
+
+# def get_context(text_input, text_vectors, texts):
+#     search_term_vector = get_embedding(text_input, engine="text-embedding-ada-002")
+#     similarities = []
+#     for i in range(len(text_vectors)):
+#         similarities.append(cosine_similarity(text_vectors[i], search_term_vector))
+#     df = pd.DataFrame({'text': texts, 'similarity': similarities})
+#     sorted_similarities = df.sort_values(by=['similarity'], ascending=False, ignore_index=True)
+#     return str(sorted_similarities['text'][0]) + str(sorted_similarities['text'][1]) + str(sorted_similarities['text'][2])
+
+def extract_answer(prompt):
+    text = ""
+    placeholder = st.empty()
+    for resp in openai.Completion.create(model='text-davinci-003', prompt=prompt, max_tokens=1024, stream=True):
+        placeholder.empty()
+        text += resp.choices[0].text
+        placeholder.write(text)
+
 
 pdf_files = st.file_uploader(
     "Upload pdf files", type=["pdf"], accept_multiple_files=True
@@ -76,6 +99,8 @@ chatgpt_chain = LLMChain(
     verbose=True,
 )
 
+retriever = SentenceTransformer('multi-qa-MiniLM-L6-cos-v1')
+
 if pdf_files:
     with st.spinner("processing pdf..."):
         df = extract_text_from_pdfs(pdf_files)
@@ -83,23 +108,12 @@ if pdf_files:
     texts = []
     for i in range(len(df)):
       texts.extend(text_splitter.split_text(df['text'][i]))
-    for i in range(len(texts)):
-      text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
+    text_vectors = retriever.encode(texts)
+    # text_vectors.append(get_embedding(texts[i], engine="text-embedding-ada-002"))
     question = st.text_input("Enter your questions here...")
     if question:
         with st.spinner("Searching. Please hold..."):
             context = get_context(question, text_vectors, texts)
-            response = chatgpt_chain.run({"context": context, "question": question})
-            st.markdown(response)
-    # if question:
-    #     if 'generated' not in st.session_state:
-    #       st.session_state['generated'] = []
-
-    #     if 'past' not in st.session_state:
-    #       st.session_state['past'] = []
-    #     st.session_state.past.append(question)
-    #     st.session_state.generated.append(response)
-    #     if st.session_state['generated']:
-    #       for i in range(len(st.session_state['generated'])-1, -1, -1):
-    #           message(st.session_state['past'][i], is_user=True, key=str(i) + '_user')
-    #           message(st.session_state["generated"][i], key=str(i))
+        response = extract_answer(PROMPT.format(context=context, question=question))
+            # response = performRequestWithStreaming(PROMPT.format(context=context, question=question))
+            # response = chatgpt_chain.run({"context": context, "question": question})
